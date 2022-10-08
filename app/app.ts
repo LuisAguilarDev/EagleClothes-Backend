@@ -1,13 +1,17 @@
+import dotenv from "dotenv";
 import express from "express";
+import morgan from "morgan";
 
+// import connectDB from "./config/db";
 import { loadApiEndpoints } from "./controllers/api";
 
-// require("dotenv").config({ path: "./.env" });
-
+dotenv.config({ path: "./.env" });
+console.log(process.env);
 const app = express();
-console.log(process.env.PORT);
+
 app.set("port", process.env.PORT || 3000);
 app.use(express.json());
+app.use(morgan("tiny"));
 app.use(express.urlencoded({ extended: true }));
 
 loadApiEndpoints(app);

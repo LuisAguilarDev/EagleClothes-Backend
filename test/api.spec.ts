@@ -1,6 +1,6 @@
-import app from "../src/app";
+import request from "supertest";
 
-const request = require("supertest");
+import app from "../app/app";
 
 describe("GET /api", () => {
   it("should return 200 OK", () => {
