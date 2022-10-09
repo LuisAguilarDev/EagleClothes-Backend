@@ -1,18 +1,34 @@
 import dotenv from "dotenv";
 import express from "express";
 import morgan from "morgan";
+import passport from "passport";
 
-// import connectDB from "./config/db";
+import connectDB from "./config/db";
 import { loadApiEndpoints } from "./controllers/api";
+import { usersRouter } from "./controllers/user";
+import JWTStrategy from "./middleware/passport-jwt";
 
 dotenv.config({ path: "./.env" });
-console.log(process.env);
 const app = express();
-
+connectDB.connectDB();
+// console.log(Session);
+// app.use(
+//   Session({
+//     store: new RedisStore({
+//       url: config.redisStore.url,
+//     }),
+//     secret: config.redisStore.secret,
+//     resave: false,
+//     saveUninitialized: false,
+//   })
+// );
+passport.use(JWTStrategy);
+app.use(passport.initialize());
 app.set("port", process.env.PORT || 3000);
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(express.urlencoded({ extended: true }));
+app.use("/api/users", usersRouter);
 
 loadApiEndpoints(app);
 

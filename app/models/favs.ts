@@ -8,4 +8,4 @@ favsSchema.set("toJSON", {});
 
 const Favs = model("favs", favsSchema);
 
-module.exports = { Favs };
+export = { Favs };
