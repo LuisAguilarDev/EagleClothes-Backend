@@ -1,6 +1,6 @@
 import * as bcrypt from "bcryptjs";
 
-import { IUser, User, user } from "../models/user";
+import { User, user } from "../models/user";
 
 // import passport from "passport";
 export interface Session {
@@ -28,7 +28,6 @@ export async function createSession(user: user) {
   const login = await User.find({
     email: email,
   });
-  console.log(login);
   const hash: string =
     login[0]?.passwordHash !== undefined ? login[0]?.passwordHash : "";
 

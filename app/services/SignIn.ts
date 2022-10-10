@@ -1,12 +1,14 @@
-import { User } from "./../models/user";
+import { User, user } from "./../models/user";
 
-export default async function SingIn(req: any, res: any) {
-  const email = req.body.email! !== undefined ? req.body.email : "";
-  const password = req.body.password! !== undefined ? req.body.password : "";
-  if (email) {
-    return res.status(400).json({
+export default async function SingIn(usuario: user) {
+  console.log(usuario);
+  const email = usuario.email !== undefined ? usuario.email : "";
+  const password = usuario.password !== undefined ? usuario.password : "";
+  console.log(email, password);
+  if (!email) {
+    return {
       message: "please send email and password",
-    });
+    };
   }
 
   const user = await User.findOne({ email: email });
@@ -14,8 +16,8 @@ export default async function SingIn(req: any, res: any) {
     const isMatch = user.comparePassword(password);
     if (isMatch) {
       const token = user.createToken();
-      return res.json({ user, token });
+      return { token, user };
     }
   }
-  return res.status(401).json({ message: "permision denied" });
+  return { message: "permision denied" };
 }

@@ -7,6 +7,7 @@ import connectDB from "./config/db";
 import { loadApiEndpoints } from "./controllers/api";
 import { usersRouter } from "./controllers/user";
 import JWTStrategy from "./middleware/passport-jwt";
+import Logged from "./routes/private";
 
 dotenv.config({ path: "./.env" });
 const app = express();
@@ -22,13 +23,14 @@ connectDB.connectDB();
 //     saveUninitialized: false,
 //   })
 // );
-passport.use(JWTStrategy);
+app.use(express.json());
 app.use(passport.initialize());
 app.set("port", process.env.PORT || 3000);
-app.use(express.json());
+passport.use(JWTStrategy);
 app.use(morgan("tiny"));
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 app.use("/api/users", usersRouter);
+app.use("/api/private", Logged);
 
 loadApiEndpoints(app);
 

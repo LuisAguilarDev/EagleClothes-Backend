@@ -18,9 +18,7 @@ export async function createUser(user: user) {
       name,
       passwordHash: passwordHashed,
     });
-    // console.log(user);
     const answer = await user.save();
     return answer;
-    // return "hola";
   }
 }

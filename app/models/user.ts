@@ -28,6 +28,7 @@ interface user {
   email: string;
   name?: string;
   passwordHash: string;
+  password?: string;
 }
 userSchema.methods.comparePassword = function (password: string) {
   const user = this;

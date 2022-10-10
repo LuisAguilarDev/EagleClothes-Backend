@@ -1,8 +1,10 @@
 import { Router } from "express";
+import passport from "passport";
 
 import { createUser } from "../services/CreateUser";
+import deleteUser from "../services/DeleteUser";
 import { createSession } from "../services/Session";
-import { IUser, user } from "./../models/user";
+import { user } from "./../models/user";
 import singIn from "./../services/SignIn";
 
 const usersRouter = Router();
@@ -27,8 +29,17 @@ usersRouter.get("/", async (req, res) => {
 });
 
 usersRouter.post("/singIn", async (req, res) => {
-  const answer = await singIn(req, res);
+  const answer = await singIn(req.body);
   res.json(answer);
 });
+
+usersRouter.delete(
+  "/singIn",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const answer = await deleteUser(req.body);
+    res.json(answer);
+  }
+);
 
 export { usersRouter };
