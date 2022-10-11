@@ -1,9 +1,9 @@
 import { Router } from "express";
 import passport from "passport";
 
-const Logged = Router();
+const logged = Router();
 
-Logged.get(
+logged.get(
   "/",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
@@ -11,4 +11,4 @@ Logged.get(
   }
 );
 
-export default Logged;
+export default logged;

@@ -1,11 +1,11 @@
 import { Router } from "express";
 import passport from "passport";
 
+import { user } from "../models/user";
 import { createUser } from "../services/CreateUser";
 import deleteUser from "../services/DeleteUser";
 import { createSession } from "../services/Session";
-import { user } from "./../models/user";
-import singIn from "./../services/SignIn";
+import singIn from "../services/SignIn";
 
 const usersRouter = Router();
 
