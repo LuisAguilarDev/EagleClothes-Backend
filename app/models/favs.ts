@@ -1,22 +1,27 @@
 import { model, Schema } from "mongoose";
 
 const favsSchema = new Schema({
-  code: String,
-  name: { type: String, required: true, unique: true },
-  price: Number,
-  img: String,
-  color: String,
+  favoritos: [
+    {
+      code: String,
+      name: { type: String, required: true },
+      price: Number,
+      img: String,
+      color: String,
+    },
+  ],
+  userId: { type: Schema.Types.ObjectId, ref: "user" },
 });
 
-interface fav {
+interface Fav {
   code: string;
   name: string;
   price: number;
   img: string;
   color: string;
 }
-favsSchema.set("toJSON", {});
+// favsSchema.set("toJSON", {});
 
 const Favs = model("favs", favsSchema);
 
-export { fav, Favs };
+export { Fav, Favs };

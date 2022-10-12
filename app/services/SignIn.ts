@@ -1,21 +1,13 @@
-import { User, user } from "./../models/user";
+import { User, user } from "../models/user";
+import { createToken } from "./createToken";
+import { validatePassword } from "./validatePassword";
 
 export default async function SingIn(usuario: user) {
-  console.log(usuario);
-  const email = usuario.email !== undefined ? usuario.email : "";
-  const password = usuario.password !== undefined ? usuario.password : "";
-  console.log(email, password);
-  if (!email) {
-    return {
-      message: "please send email and password",
-    };
-  }
-
-  const user = await User.findOne({ email: email });
+  const user = await User.findOne({ email: usuario.email });
   if (user) {
-    const isMatch = user.comparePassword(password);
+    const isMatch = await validatePassword(usuario);
     if (isMatch) {
-      const token = user.createToken();
+      const token = await createToken(user);
       return { token, user };
     }
   }

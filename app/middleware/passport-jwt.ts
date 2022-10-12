@@ -1,21 +1,28 @@
 import dotenv from "dotenv";
-import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt";
+import { RequestHandler } from "express";
+import jwt from "jsonwebtoken";
 
-import { User } from "./../models/user";
+const secret: string =
+  process.env.SECRET !== undefined ? process.env.SECRET : "";
 
 dotenv.config({ path: "./.env" });
-export default new JWTStrategy(
-  {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.SECRET,
-  },
-  async (payload, done) => {
-    try {
-      const user = User.findById(payload._id);
-      if (user) return done(null, user);
-      return done(null, false);
-    } catch (error) {
-      return done(error);
+
+const auth: RequestHandler = (req, res, next) => {
+  if (req.headers["authorization"]) {
+    const token = req.headers["authorization"];
+    if (!token) {
+      return res.status(401).json({ message: "Acces denied" });
     }
+    const tokenBody = token.slice(7);
+    const decodedToken = jwt.decode(tokenBody);
+    if (decodedToken) req.user = decodedToken;
+    try {
+      jwt.verify(tokenBody, secret);
+    } catch (error) {
+      return res.status(401).send({ message: "Invalid Token" });
+    }
+    next();
   }
-);
+};
+
+export { auth };

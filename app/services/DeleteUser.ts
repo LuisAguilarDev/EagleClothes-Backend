@@ -1,4 +1,4 @@
-import { User, user } from "./../models/user";
+import { User, user } from "../models/user";
 
 export default async function (usuario: user) {
   await User.deleteOne({ email: usuario.email });
