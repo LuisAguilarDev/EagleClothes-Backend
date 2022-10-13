@@ -35,7 +35,7 @@ userRouter.post("/singIn", async (req, res) => {
 
 userRouter.delete(
   "/singIn",
-  passport.authenticate("jwt", { session: false }),
+  // passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     const answer = await deleteUser(req.body);
     res.json(answer);

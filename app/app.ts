@@ -16,8 +16,9 @@ app.use(passport.initialize());
 app.set("port", process.env.PORT || 3000);
 app.use(morgan("tiny"));
 // app.use(express.urlencoded({ extended: true }));
-app.use("/api/users", usersRouter);
-app.use("/api/private", Logged);
-app.use("/api/users/favs", favs);
+app.use("/", Router);
+// app.use("/api/users", usersRouter);
+// app.use("/api/private", Logged);
+// app.use("/api/users/favs", favs);
 
 export default app;
