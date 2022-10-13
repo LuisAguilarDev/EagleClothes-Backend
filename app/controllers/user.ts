@@ -1,45 +1,48 @@
-import { Router } from "express";
-import passport from "passport";
+import * as bcrypt from "bcryptjs";
+import { Request, Response } from "express";
 
-import { user } from "../models/user";
-import { createUser } from "../services/createUser";
-import deleteUser from "../services/deleteUser";
-import { createSession } from "../services/session";
-import singIn from "../services/signIn";
+import { createToken } from "../services/createToken";
+import { validatePassword } from "../services/validatePassword";
+import { IUser, User } from "./../models/user";
 
-const userRouter = Router();
-
-userRouter.post("/signUp", async (req, res) => {
-  const usuario: user = {
-    email: req.body.email,
-    name: req.body.name,
-    passwordHash: req.body.password,
-  };
-  const answer = await createUser(usuario);
-  res.json(answer);
-});
-
-userRouter.get("/", async (req, res) => {
-  const usuario: user = {
-    email: req.body.email,
-    passwordHash: req.body.password,
-  };
-  const answer = await createSession(usuario);
-  res.json(answer);
-});
-
-userRouter.post("/singIn", async (req, res) => {
-  const answer = await singIn(req.body);
-  res.json(answer);
-});
-
-userRouter.delete(
-  "/singIn",
-  // passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    const answer = await deleteUser(req.body);
-    res.json(answer);
+export async function createUser(req: Request, res: Response) {
+  const { email, name, password } = req.body;
+  const salt = bcrypt.genSaltSync(10);
+  const created = await User.findOne({ email: email });
+  if (created) {
+    return res.json({
+      message: "el usuario ya se encuentra creado en el sistema",
+    });
   }
-);
+  if (created === null) {
+    const passwordHashed = bcrypt.hashSync(password, salt);
+    const user = new User({
+      email,
+      name,
+      passwordHash: passwordHashed,
+    });
+    const answer = await user.save();
+    return res.json({ answer, message: "User created successfully" });
+  }
+}
 
-export { userRouter };
+export async function signIn(req: Request) {
+  const userBase: any = req.user;
+  type userBase = IUser;
+  const user = await User.findOne({ email: userBase.email });
+  if (user) {
+    const isMatch = await validatePassword(userBase);
+    if (isMatch) {
+      const token = await createToken(user);
+      return { token, user };
+    }
+  }
+  return { message: "permision denied" };
+}
+
+export async function deleteUser(req: Request, res: Response) {
+  const userBase: any = req.user;
+  type userBase = IUser;
+  const answer = await User.deleteOne({ email: userBase.email });
+  res.json({ answer, message: "User deleted successfully" });
+}

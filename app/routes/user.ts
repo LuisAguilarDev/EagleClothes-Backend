@@ -1,9 +1,14 @@
 import { Router } from "express";
 
-import { userRouter } from "../controllers/user";
+import * as userController from "../controllers/user";
+import { auth } from "../middleware/passport-jwt";
 
 const usersRouter = Router();
 
-usersRouter.use("/", userRouter);
+usersRouter.post("/signUp", userController.createUser);
+
+usersRouter.post("/singIn", userController.signIn);
+
+usersRouter.delete("/singIn", auth, userController.deleteUser);
 
 export { usersRouter };

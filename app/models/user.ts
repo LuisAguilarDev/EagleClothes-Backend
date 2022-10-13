@@ -13,12 +13,8 @@ interface IUser {
   passwordHash: string;
 }
 
-interface user extends IUser {
-  password?: string;
-}
-
 userSchema.set("toJSON", {});
 
 const User = model<IUser>("User", userSchema);
 
-export { IUser, User, user };
+export { IUser, User };

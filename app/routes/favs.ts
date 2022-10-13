@@ -1,9 +1,10 @@
 import { Router } from "express";
 
-import favs from "../controllers/fav";
+import * as favController from "../controllers/fav";
+import { auth } from "../middleware/passport-jwt";
 
-const fav = Router();
+const favRouter = Router();
 
-fav.use("/", favs);
+favRouter.post("/", auth, favController.createFav);
 
-export default fav;
+export default favRouter;
