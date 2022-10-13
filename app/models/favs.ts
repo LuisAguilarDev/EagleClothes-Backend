@@ -22,6 +22,6 @@ interface Fav {
 }
 // favsSchema.set("toJSON", {});
 
-const Favs = model("favs", favsSchema);
+const Favs = model("Favs", favsSchema);
 
 export { Fav, Favs };

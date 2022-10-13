@@ -1,6 +1,6 @@
 import * as bcrypt from "bcryptjs";
 
-import { User, user } from "../models/user";
+import { User } from "../models/user";
 
 export async function validatePassword(user: any) {
   const data: any = await User.find({ email: user.email });
