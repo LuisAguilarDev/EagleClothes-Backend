@@ -26,18 +26,21 @@ export async function createUser(req: Request, res: Response) {
   }
 }
 
-export async function signIn(req: Request) {
-  const userBase: any = req.user;
-  type userBase = IUser;
-  const user = await User.findOne({ email: userBase.email });
+export async function signIn(req: Request, res: Response) {
+  const { email, password } = req.body;
+  const userBase = {
+    email,
+    password,
+  };
+  const user = await User.findOne({ email: email });
   if (user) {
     const isMatch = await validatePassword(userBase);
     if (isMatch) {
       const token = await createToken(user);
-      return { token, user };
+      return res.json({ token, user });
     }
   }
-  return { message: "permision denied" };
+  return res.json({ message: "permision denied" });
 }
 
 export async function deleteUser(req: Request, res: Response) {

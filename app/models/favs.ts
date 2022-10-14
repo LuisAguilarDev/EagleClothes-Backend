@@ -4,7 +4,7 @@ const favsSchema = new Schema({
   favoritos: [
     {
       code: String,
-      name: { type: String, required: true },
+      name: String,
       price: Number,
       img: String,
       color: String,

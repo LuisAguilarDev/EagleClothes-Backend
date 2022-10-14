@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
 
-import { Favs } from "../models/favs";
+import { Fav, Favs } from "../models/favs";
 import { IUser, User } from "../models/user";
 
 export async function createFav(req: Request, res: Response) {
-  const userBase: any = req.user;
-  type userBase = IUser;
+  const userBase: IUser | any = req.user;
   const fav = {
     code: req.body.code,
     name: req.body.name,
@@ -13,14 +12,25 @@ export async function createFav(req: Request, res: Response) {
     img: req.body.img,
     color: req.body.color,
   };
-  const email = userBase.email;
-
   const created = await User.findOne({
-    email,
+    id: userBase._id,
   });
   if (created === null) {
     return res.json({ message: "You need to login first" });
   } else {
+    const actual: any = await Favs.findOne({ userId: created._id });
+    if (actual) {
+      if (actual.favoritos.length !== 0) {
+        const find = actual.favoritos.find((x: any) => {
+          return x.code === req.body.code;
+        });
+        if (find) {
+          if (find.code === req.body.code) {
+            return res.json({ message: "favorite is already added" });
+          }
+        }
+      }
+    }
     const isUpdated = await Favs.updateOne(
       { userId: created._id },
       { $push: { favoritos: fav } },
@@ -29,62 +39,24 @@ export async function createFav(req: Request, res: Response) {
     res.json({ isUpdated, message: "favorite added" });
   }
 }
+export async function deleteFav(req: Request, res: Response) {
+  const userBase: any = req.user;
+  const created: IUser | any = await User.findOne({ email: userBase.email });
+  const favs: Fav | any = await Favs.findOne({ userId: created._id });
+  const edit = favs.favoritos.filter((x: Fav) => {
+    return x.code !== req.body.code;
+  });
+  console.log(edit);
+  const isUpdated = await Favs.updateOne(
+    { userId: created._id },
+    { favoritos: edit }
+  );
+  res.json({ isUpdated, message: "se ha eliminado el favorito" });
+}
 
-// favs.delete(
-//   "/",
-//   passport.authenticate("jwt", { session: false }),
-//   async (req, res) => {
-//     const user = req.body.user.email;
-//     const fav = {
-//       code: req.body.code,
-//       name: req.body.name,
-//       price: req.body.price,
-//       img: req.body.img,
-//       color: req.body.color,
-//     };
-//     const answer = await deleteFav(fav, user);
-//     res.json(answer);
-//   }
-// );
-
-// favs.get(
-//   "/",
-//   passport.authenticate("jwt", { session: false }),
-//   async (req, res) => {
-//     const user = req.body.user.email;
-//     const fav = {
-//       code: req.body.code,
-//       name: req.body.name,
-//       price: req.body.price,
-//       img: req.body.img,
-//       color: req.body.color,
-//     };
-//     const answer = await getFav(fav, user);
-//     res.json(answer);
-//   }
-// );
-
-// export async function deleteFav(fav: Fav, user: any) {
-//   const created = await User.findOne({ email: user });
-//   const favs = await Favs.findOne({ name: fav.name });
-//   const isUpdated = await User.updateOne(
-//     { _id: created!._id! },
-//     { $pull: { favs: favs!._id } }
-//   );
-//   console.log(isUpdated);
-//   return { message: "se ha eliminado el favorito" };
-// }
-
-// export async function getFav(fav: Fav, user: string) {
-//   const created = await User.findOne({ email: user });
-//   //   if (created?.favs?.length === 0) return { message: "user has no favorites" };
-//   if (created?.favs?.length === 1) {
-//     const favs = await Favs.find({ _id: created.favs?.[0] });
-//     return favs;
-//   }
-//   const objQuery = created?.favs?.map((f) => {
-//     return { _id: f };
-//   });
-//   const favs = await Favs.find({ $or: objQuery });
-//   return favs;
-// }
+export async function getFav(req: Request, res: Response) {
+  const userBase: any = req.user;
+  const created: Fav | any = await Favs.findOne({ userId: userBase.id });
+  const answer = created.favoritos;
+  res.json({ answer, message: "lista de favoritos" });
+}
