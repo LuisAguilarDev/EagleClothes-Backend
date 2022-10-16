@@ -1,6 +1,13 @@
-// import * as bcrypt from "bcryptjs";
-// import dotenv from "dotenv";
-// import jwt from "jsonwebtoken";
-// import { model, Schema } from "mongoose";
+import dotenv from "dotenv";
+import { model, Schema } from "mongoose";
 
-// dotenv.config({ path: "./.env" });
+dotenv.config({ path: "./.env" });
+
+const shoppingCartSchema = new Schema({
+  userId: { type: Schema.Types.ObjectId, ref: "user" },
+  cart: [],
+});
+
+const Cart = model("Cart", shoppingCartSchema);
+
+export { Cart };

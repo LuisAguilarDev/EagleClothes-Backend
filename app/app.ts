@@ -20,4 +20,3 @@ app.use("/", appRouter);
 // app.use("/api/users/favs", favs);
 
 export default app;
-//hola

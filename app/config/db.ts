@@ -12,21 +12,3 @@ const connectDB = async () => {
 };
 
 export = { connectDB };
-
-// import { MongoClient } from "mongodb";
-// // Replace the uri string with your MongoDB deployment's connection string.
-// const uri: string =
-//   process.env.MONGO_URI !== undefined ? process.env.MONGO_URI : "";
-// const client = new MongoClient(uri);
-// async function run() {
-//   try {
-//     await client.connect();
-//     // database and collection code goes here
-//     // find code goes here
-//     // iterate code goes here
-//   } finally {
-//     // Ensures that the client will close when you finish/error
-//     await client.close();
-//   }
-// }
-// run().catch(console.dir);
