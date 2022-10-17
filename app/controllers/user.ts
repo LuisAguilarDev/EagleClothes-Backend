@@ -37,7 +37,7 @@ export async function signIn(req: Request, res: Response) {
     const isMatch = await validatePassword(userBase);
     if (isMatch) {
       const token = await createToken(user);
-      return res.json({ token, user });
+      return res.json({ token, user, message: "Successful login" });
     }
   }
   return res.json({ message: "permision denied" });

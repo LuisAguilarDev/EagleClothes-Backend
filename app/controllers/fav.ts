@@ -13,7 +13,7 @@ export async function createFav(req: Request, res: Response) {
     color: req.body.color,
   };
   const created = await User.findOne({
-    id: userBase._id,
+    _id: userBase.id,
   });
   if (created === null) {
     return res.json({ message: "You need to login first" });
@@ -46,7 +46,6 @@ export async function deleteFav(req: Request, res: Response) {
   const edit = favs.favoritos.filter((x: Fav) => {
     return x.code !== req.body.code;
   });
-  console.log(edit);
   const isUpdated = await Favs.updateOne(
     { userId: created._id },
     { favoritos: edit }
@@ -57,6 +56,12 @@ export async function deleteFav(req: Request, res: Response) {
 export async function getFav(req: Request, res: Response) {
   const userBase: any = req.user;
   const created: Fav | any = await Favs.findOne({ userId: userBase.id });
+  if (!created) {
+    return res.send({ message: "User has no favorites" });
+  }
   const answer = created.favoritos;
+  if (answer.length === 0) {
+    return res.json({ message: "User has no favorites" });
+  }
   res.json({ answer, message: "lista de favoritos" });
 }

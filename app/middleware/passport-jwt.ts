@@ -11,7 +11,7 @@ const auth: RequestHandler = (req, res, next) => {
   if (req.headers["authorization"]) {
     const token = req.headers["authorization"];
     if (!token) {
-      return res.status(401).json({ message: "Acces denied" });
+      return res.status(401).json({ message: "Access denied" });
     }
     const tokenBody = token.slice(7);
     const decodedToken = jwt.decode(tokenBody);
@@ -21,8 +21,9 @@ const auth: RequestHandler = (req, res, next) => {
     } catch (error) {
       return res.status(401).send({ message: "Invalid Token" });
     }
-    next();
+    return next();
   }
+  res.status(401).json({ message: "Access denied" });
 };
 
 export { auth };
