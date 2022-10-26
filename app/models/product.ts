@@ -17,6 +17,7 @@ import { model, Schema } from "mongoose";
 //   brandName: String,
 
 const productSchema = new Schema({
+  category: String,
   code: String,
   name: String,
   pk: Number,
