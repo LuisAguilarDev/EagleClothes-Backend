@@ -21,7 +21,6 @@ export async function getProductMen(req: Request, res: Response) {
           {},
           { skip: skip, limit: limit }
         );
-        console.log(response);
         return res.send(response);
       }
     }
@@ -31,6 +30,5 @@ export async function getProductMen(req: Request, res: Response) {
     {},
     { skip: 0, limit: 8 }
   );
-  console.log(response);
   res.send(response);
 }
