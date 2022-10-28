@@ -9,8 +9,12 @@ export async function createFav(req: Request, res: Response) {
     code: req.body.code,
     name: req.body.name,
     price: req.body.price,
-    img: req.body.img,
+    variantSizes: req.body.variantSizes,
+    pk: req.body.pk,
+    images: req.body.images,
     color: req.body.color,
+    colorName: req.body.colorName,
+    galleryImages: req.body.galleryImages,
   };
   const created = await User.findOne({
     _id: userBase.id,

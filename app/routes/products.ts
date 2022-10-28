@@ -4,7 +4,7 @@ import * as productController from "../controllers/product";
 
 const productRouter = Router();
 
-productRouter.get("/", productController.getProductMen);
-productRouter.get("/:page", productController.getProductMen);
+productRouter.get("/", productController.getProducts);
+productRouter.get("/:page", productController.getProductsMen);
 
 export default productRouter;

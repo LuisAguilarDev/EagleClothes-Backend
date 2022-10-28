@@ -5,9 +5,13 @@ const favsSchema = new Schema({
     {
       code: String,
       name: String,
-      price: Number,
-      img: String,
-      color: String,
+      pk: String,
+      price: {},
+      images: String,
+      color: [],
+      galleryImages: [],
+      variantSizes: [],
+      colorName: [],
     },
   ],
   userId: { type: Schema.Types.ObjectId, ref: "user" },
@@ -19,6 +23,7 @@ interface Fav {
   price: number;
   img: string;
   color: string;
+  galleryImages: Array<string>;
 }
 // favsSchema.set("toJSON", {});
 
