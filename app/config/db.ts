@@ -1,8 +1,6 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 
-import initial from "../data/bulkmen";
-
 dotenv.config({ path: "./.env" });
 
 const url: string =
