@@ -5,6 +5,7 @@ import { IUser, User } from "../models/user";
 
 export async function postCart(req: Request, res: Response) {
   const userBase: IUser | any = req.user;
+  console.log(req.body.quantity);
   const product = {
     code: req.body.code,
     name: req.body.name,
@@ -15,6 +16,7 @@ export async function postCart(req: Request, res: Response) {
     colorName: req.body.colorName,
     galleryImages: req.body.galleryImages,
     images: req.body.images,
+    quantity: req.body.quantity,
   };
   const created = await User.findOne({
     _id: userBase.id,
@@ -25,14 +27,25 @@ export async function postCart(req: Request, res: Response) {
     const actual: any = await Cart.findOne({ userId: created._id });
     if (actual) {
       if (actual.cart.length !== 0) {
-        const find = actual.cart.find((c: any) => {
+        const index = actual.cart.findIndex((c: any) => {
           return c.code === req.body.code;
         });
-        if (find) {
-          if (find.code === req.body.code) {
-            return res.json({ message: "Product is already added" });
-          }
+        if (index === -1) {
+          const isUpdated = await Cart.updateOne(
+            { userId: created._id },
+            { $push: { cart: product } },
+            { upsert: true }
+          );
+          return res.json({ isUpdated, message: "Product added" });
         }
+        const cart = actual.cart;
+        cart[index].quantity = cart[index].quantity + product.quantity;
+        const isUpdated = await Cart.updateOne(
+          { userId: created._id },
+          { cart: cart },
+          { upsert: true }
+        );
+        return res.json({ isUpdated, message: "Product quantity updated" });
       }
     }
     const isUpdated = await Cart.updateOne(
@@ -51,12 +64,11 @@ export async function deleteCart(req: Request, res: Response) {
   const edit = cart.cart.filter((c: any) => {
     return c.code !== req.body.code;
   });
-  console.log(edit);
   const isUpdated = await Cart.updateOne(
     { userId: created._id },
     { cart: edit }
   );
-  res.json({ isUpdated, message: "se ha eliminado el favorito" });
+  res.json({ isUpdated, message: "The item has been removed from your cart" });
 }
 
 export async function getCart(req: Request, res: Response) {

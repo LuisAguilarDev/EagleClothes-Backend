@@ -22,7 +22,12 @@ export async function createUser(req: Request, res: Response) {
       passwordHash: passwordHashed,
     });
     const answer = await user.save();
-    return res.json({ answer, message: "User created successfully" });
+    const token = await createToken(answer);
+    return res.json({
+      user: answer,
+      token,
+      message: "User created successfully",
+    });
   }
 }
 
