@@ -15,7 +15,6 @@ export default function initial() {
       galleryImages: p.galleryImages,
       images: p.images[0].url,
     });
-    const isUpdated = await product.save();
-    console.log(isUpdated);
+    await product.save();
   });
 }

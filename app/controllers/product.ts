@@ -25,16 +25,13 @@ export async function getProducts(req: Request, res: Response) {
 export async function getProductsMen(req: Request, res: Response) {
   if (typeof parseInt(req.params.page) === "number") {
     let page: number = parseInt(req.params.page);
-    console.log(page);
     if (page === undefined) {
       page = 0;
     }
-    console.log("entre");
     if (typeof page === "number") {
       if (page >= 0) {
         const skip = (page - 1) * 8;
         const limit = page * 8;
-        console.log(limit, skip);
         const response = await Product.find(
           { category: "H&M MAN" },
           {},

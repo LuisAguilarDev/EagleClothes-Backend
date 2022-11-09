@@ -20,7 +20,6 @@ export async function getProduct(req: Request, res: Response) {
       },
     })
     .then(function (response: any) {
-      console.log(response);
       response.data.results.map(async (p: any) => {
         const product = new Product({
           category: "H&M WOMAN",

@@ -5,7 +5,6 @@ import { IUser, User } from "../models/user";
 
 export async function postCart(req: Request, res: Response) {
   const userBase: IUser | any = req.user;
-  console.log(req.body.quantity);
   const product = {
     code: req.body.code,
     name: req.body.name,
@@ -57,18 +56,22 @@ export async function postCart(req: Request, res: Response) {
   }
 }
 
-export async function deleteCart(req: Request, res: Response) {
+export async function deleteCart(req: any, res: Response) {
   const userBase: any = req.user;
+  const { code } = req.params;
   const created: IUser | any = await User.findOne({ email: userBase.email });
   const cart: any = await Cart.findOne({ userId: created._id });
   const edit = cart.cart.filter((c: any) => {
-    return c.code !== req.body.code;
+    return c.code !== code;
   });
   const isUpdated = await Cart.updateOne(
     { userId: created._id },
     { cart: edit }
   );
-  res.json({ isUpdated, message: "The item has been removed from your cart" });
+  res.json({
+    isUpdated,
+    message: "The item has been removed from your cart",
+  });
 }
 
 export async function getCart(req: Request, res: Response) {
