@@ -80,5 +80,5 @@ export async function getCart(req: Request, res: Response) {
   if (created.cart.length === 0) {
     return res.json({ message: "User has no products add in cart" });
   }
-  res.json({ created, message: "product list" });
+  res.json({ cart: [created.cart], message: "product list" });
 }
