@@ -45,10 +45,12 @@ export async function createFav(req: Request, res: Response) {
 }
 export async function deleteFav(req: Request, res: Response) {
   const userBase: any = req.user;
+  const { code } = req.params;
+  console.log(code);
   const created: IUser | any = await User.findOne({ email: userBase.email });
   const favs: Fav | any = await Favs.findOne({ userId: created._id });
   const edit = favs.favoritos.filter((x: Fav) => {
-    return x.code !== req.body.code;
+    return x.code !== code;
   });
   const isUpdated = await Favs.updateOne(
     { userId: created._id },
