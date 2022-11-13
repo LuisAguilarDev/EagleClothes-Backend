@@ -26,13 +26,14 @@ const auth: RequestHandler = (req, res, next) => {
       async function isTest(userInfo: any) {
         if (userInfo as IUser) {
           const token = await createToken(userInfo);
-          transporter.sendMail({
+          const answer = transporter.sendMail({
             from: `"Eagle Clothes" <eagle.clothes.store@gmail.com>`,
             to: `${userInfo.email}`,
             subject: "Please verify your email",
             text: "confirm email",
-            html: `<a href="http://localhost:5000/api/users/validateUser/${token}">Please confirm your email</a>`,
+            html: `<a href="http://localhost:5173/validateUser/tokenToValidate/${token}">Please confirm your email</a>`,
           });
+          console.log(answer, "hola?");
         }
         return false;
       }

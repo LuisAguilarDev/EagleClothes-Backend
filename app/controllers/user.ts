@@ -2,7 +2,6 @@ import * as bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
 
 import { createToken } from "../services/createToken";
 import { transporter } from "../services/validateEmail";
@@ -34,7 +33,7 @@ export async function createUser(req: Request, res: Response) {
       to: "luisgerardo900@gmail.com",
       subject: "Please verify your email",
       text: "confirm email",
-      html: `<a href="http://localhost:5000/api/users/validateUser/${token}">Please confirm your email/a>`,
+      html: `<a href="http://localhost:5173/validateUser?token=${token}">Please confirm your email</a>`,
     });
     return res.json({
       user: answer,
@@ -53,6 +52,19 @@ export async function signIn(req: Request, res: Response) {
   const user = await User.findOne({ email: email });
   console.log(!user?.verified);
   if (!user?.verified) {
+    async function isTest(userInfo: any) {
+      if (userInfo as IUser) {
+        const token = await createToken(userInfo);
+        transporter.sendMail({
+          from: `"Eagle Clothes" <eagle.clothes.store@gmail.com>`,
+          to: `${userInfo.email}`,
+          subject: "Please verify your email",
+          text: "confirm email",
+          html: `<a href="http://localhost:5173/validateUser?token=${token}">Please confirm your email</a>`,
+        });
+      }
+    }
+    isTest(userBase);
     return res.status(403).json({ message: "Please validate your email" });
   }
   if (user) {
@@ -93,10 +105,8 @@ export async function validateUser(req: Request, res: Response) {
           { verified: true },
           { upsert: true }
         );
-        const html = `<a href="http://localhost:5173/login"> <style type="text/css">
-        a {font-size: 18pt; font-family: arial,helvetica; color:black}
-        </style>User verified please go to our login page</a>`;
-        return res.send(html);
+        const token = await createToken(answer);
+        return res.json({ token, answer, message: "Successful login" });
       }
     }
     return res.status(404).send({ message: "Invalid Request" });
