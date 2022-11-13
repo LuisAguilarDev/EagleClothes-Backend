@@ -56,7 +56,7 @@ export async function deleteFav(req: Request, res: Response) {
     { userId: created._id },
     { favoritos: edit }
   );
-  res.json({ isUpdated, message: "se ha eliminado el favorito" });
+  res.json({ isUpdated, message: "Favorite has been removed" });
 }
 
 export async function getFav(req: Request, res: Response) {
@@ -69,5 +69,5 @@ export async function getFav(req: Request, res: Response) {
   if (answer.length === 0) {
     return res.json({ message: "User has no favorites" });
   }
-  res.json({ answer, message: "lista de favoritos" });
+  res.json({ answer, message: "Favs list" });
 }

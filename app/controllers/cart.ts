@@ -27,8 +27,8 @@ export async function postCart(req: Request, res: Response) {
     const actual: any = await Cart.findOne({ userId: created._id });
     if (actual) {
       if (actual.cart.length !== 0) {
-        const index = actual.cart.findIndex((c: any) => {
-          return c.code === req.body.code;
+        const index = actual.cart.findIndex((p: product) => {
+          return p.code === product.code;
         });
         if (index === -1) {
           const isUpdated = await Cart.updateOne(
@@ -39,21 +39,24 @@ export async function postCart(req: Request, res: Response) {
           return res.json({ isUpdated, message: "Product added" });
         }
         const cart = actual.cart;
+
         cart[index].quantity = cart[index].quantity + product.quantity;
         const isUpdated = await Cart.updateOne(
           { userId: created._id },
-          { cart: cart },
+          { cart: [...cart] },
           { upsert: true }
         );
+        console.log(isUpdated);
         return res.json({ isUpdated, message: "Product quantity updated" });
       }
     }
+    console.log("llegue hasta aqui?");
     const isUpdated = await Cart.updateOne(
       { userId: created._id },
       { $push: { cart: product } },
       { upsert: true }
     );
-    res.json({ isUpdated, message: "Product added" });
+    return res.json({ isUpdated, message: "Product added" });
   }
 }
 
