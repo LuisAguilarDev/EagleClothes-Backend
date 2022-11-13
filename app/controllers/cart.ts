@@ -80,7 +80,7 @@ export async function getCart(req: Request, res: Response) {
   const created: any = await Cart.findOne({ userId: userBase.id });
   const cart = created?.cart?.length ? created.cart.length : 0;
   if (cart === 0) {
-    return res.json({ message: "User has no products add in cart" });
+    return res.json({ cart: [], message: "User has no products add in cart" });
   }
   res.json({ cart: [created.cart], message: "product list" });
 }

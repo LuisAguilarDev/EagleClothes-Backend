@@ -5,12 +5,14 @@ const userSchema = new Schema<IUser>({
   name: { type: String, required: true },
   passwordHash: { type: String, required: true },
   // favs: [{ type: Schema.Types.ObjectId, ref: "Favs" }],
+  verified: { type: Boolean, default: false },
 });
 
 interface IUser {
   email: string;
   name?: string;
   passwordHash: string;
+  verified: boolean;
 }
 
 userSchema.set("toJSON", {});

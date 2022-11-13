@@ -11,4 +11,6 @@ usersRouter.post("/singIn", userController.signIn);
 
 usersRouter.delete("/singIn", auth, userController.deleteUser);
 
+usersRouter.get("/validateUser/:token", userController.validateUser);
+
 export { usersRouter };

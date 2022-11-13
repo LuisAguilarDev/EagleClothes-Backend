@@ -11,7 +11,12 @@ const secret: string =
 export async function createToken(user: IUser) {
   const data: any = await User.find({ email: user.email });
   const token = jwt.sign(
-    { id: data[0]._id, email: data[0].email, password: data[0].passwordHash },
+    {
+      id: data[0]._id,
+      email: data[0].email,
+      password: data[0].passwordHash,
+      verified: data[0].verified,
+    },
     secret,
     {
       expiresIn: 86400,

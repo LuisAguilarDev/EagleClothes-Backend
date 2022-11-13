@@ -2,6 +2,10 @@ import dotenv from "dotenv";
 import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 
+import { IUser } from "../models/user";
+import { createToken } from "../services/createToken";
+import { transporter } from "../services/validateEmail";
+
 const secret: string =
   process.env.SECRET !== undefined ? process.env.SECRET : "";
 
@@ -15,7 +19,26 @@ const auth: RequestHandler = (req, res, next) => {
     }
     const tokenBody = token.slice(7);
     const decodedToken = jwt.decode(tokenBody);
-    if (decodedToken) req.user = decodedToken;
+    const { verified } = <IUser>decodedToken;
+    if (decodedToken) req.user = <IUser>decodedToken;
+    if (!verified) {
+      const userInfo = { ...req.user };
+      async function isTest(userInfo: any) {
+        if (userInfo as IUser) {
+          const token = await createToken(userInfo);
+          transporter.sendMail({
+            from: `"Eagle Clothes" <eagle.clothes.store@gmail.com>`,
+            to: `${userInfo.email}`,
+            subject: "Please verify your email",
+            text: "confirm email",
+            html: `<a href="http://localhost:5000/api/users/validateUser/${token}">Please confirm your email</a>`,
+          });
+        }
+        return false;
+      }
+      isTest(userInfo);
+      return res.status(401).json({ message: "Verify your email to continue" });
+    }
     try {
       jwt.verify(tokenBody, secret);
     } catch (error) {
