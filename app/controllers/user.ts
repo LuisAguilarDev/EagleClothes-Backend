@@ -93,7 +93,9 @@ export async function validateUser(req: Request, res: Response) {
           { verified: true },
           { upsert: true }
         );
-        const html = `<a href="http://localhost:5173/login" style:{text-decotation:"none"}>User verified Go to main page</a>`;
+        const html = `<a href="http://localhost:5173/login"> <style type="text/css">
+        a {font-size: 18pt; font-family: arial,helvetica; color:black}
+        </style>User verified please go to our login page</a>`;
         return res.send(html);
       }
     }
