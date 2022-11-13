@@ -1,20 +1,21 @@
 import { model, Schema } from "mongoose";
-//Other properties of main Product from api
-//   visible: Boolean,
-//   numbersOfPieces: Number,
-//   sale: Boolean,
-//   ticket: String,
-//   searchEngineProductId: String,
-//   dummy: Boolean,
-//   linkPdp: String,
-//   categoryName: String,
-//   ecoTaxValue: Number,
-//   swatchesTotal: Number,
-//   showPriceMarker: Boolean,
-//   redirectToPdp: Boolean,
-//   mainCategoryCode: String,
-//   comingSoon: Boolean,
-//   brandName: String,
+
+export interface product {
+  category: string;
+  code: string;
+  name: string;
+  pk: number;
+  price: {
+    value: number;
+    formattedValue: string;
+  };
+  variantSizes: [{ filtercode: string }];
+  color: string[];
+  colorName: string[];
+  galleryImages: [{ url: string }];
+  images: string;
+  quantity?: number;
+}
 
 const productSchema = new Schema({
   category: String,

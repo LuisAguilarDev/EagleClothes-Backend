@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 
+import { product } from "../models/product";
 import { Cart } from "../models/shoppingCart";
 import { IUser, User } from "../models/user";
 
@@ -81,5 +82,22 @@ export async function getCart(req: Request, res: Response) {
   if (cart === 0) {
     return res.json({ message: "User has no products add in cart" });
   }
+  res.json({ cart: [created.cart], message: "product list" });
+}
+
+export async function updateQuantity(req: Request, res: Response) {
+  const userBase: any = req.user;
+  const { code, quantity } = req.body;
+  const created: any = await Cart.findOne({ userId: userBase.id });
+  const cart = created?.cart?.length ? created.cart.length : 0;
+  if (cart === 0) {
+    return res.json({ message: "User has no products add in cart" });
+  }
+  created.cart.map((p: product) => {
+    if (p.code === code) {
+      p.quantity = p.quantity + quantity;
+    }
+  });
+  created.save();
   res.json({ cart: [created.cart], message: "product list" });
 }
