@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import addressRouter from "./address";
 import cartRouter from "./cart";
 import favRouter from "./favs";
 import productRouter from "./products";
@@ -13,5 +14,6 @@ appRouter.use("/api/users/favs", favRouter);
 appRouter.use("/api/users/cart", cartRouter);
 appRouter.use("/api/users/product", productRouter);
 appRouter.use("/api/search", searchRouter);
+appRouter.use("/api/users/address", addressRouter);
 
 export { appRouter };

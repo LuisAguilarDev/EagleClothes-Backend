@@ -10,4 +10,17 @@ const addressSchema = new Schema({
 
 const Address = model("Address", addressSchema);
 
-export { Address };
+interface Iaddress {
+  userId: string;
+  address: IUaddress[];
+}
+
+type IUaddress = {
+  ZIP_CODE: string;
+  Address: string;
+  City: string;
+  Country: string;
+  Telephone_number: string;
+};
+
+export { Address, Iaddress, IUaddress };
