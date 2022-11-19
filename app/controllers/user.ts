@@ -30,7 +30,7 @@ export async function createUser(req: Request, res: Response) {
     const token = await createToken(user);
     transporter.sendMail({
       from: `"Eagle Clothes" <eagle.clothes.store@gmail.com>`,
-      to: "luisgerardo900@gmail.com",
+      to: `${email}`,
       subject: "Please verify your email",
       text: "confirm email",
       html: `<a href="http://localhost:5173/validateUser?token=${token}">Please confirm your email</a>`,

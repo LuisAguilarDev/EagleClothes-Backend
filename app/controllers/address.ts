@@ -36,29 +36,21 @@ export async function postAddress(req: Request, res: Response) {
 
 export async function deleteAddress(req: Request, res: Response) {
   const userBase: any = req.user;
-  const newAddress: IUaddress = {
-    ZIP_CODE: req.body.ZIP_CODE,
-    Address: req.body.Address,
-    City: req.body.City,
-    Country: req.body.Country,
-    Telephone_number: req.body.Telephone_number,
-  };
   const { index } = req.params;
   const indexNumber = index ? <any>index * 1 : -1;
-  console.log(userBase.id, "userBase.id");
   const actual: Iaddress | null = await Address.findOne({
     userId: userBase.id,
   });
   if (typeof indexNumber === "number" && actual) {
     console.log(indexNumber, "indexNumber");
-    const edit = actual.address.splice(indexNumber, 1);
-    console.log(edit, "edit", actual, "vsAddres");
-    // const isUpdated = await Address.updateOne(
-    //   { userId: userBase.id },
-    //   { address: edit }
-    // );
-    // return res.json({ isUpdated, message: "Address has been removed" });
-    return;
+    actual.address.splice(indexNumber, 1);
+    const isUpdated = await Address.updateOne(
+      { userId: userBase.id },
+      { address: actual.address },
+      { upsert: true }
+    );
+    console.log(isUpdated, "isupdated");
+    return res.json({ actual, message: "Address has been removed" });
   }
 }
 
