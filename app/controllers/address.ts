@@ -26,16 +26,6 @@ export async function postAddress(req: Request, res: Response) {
       message: "User has no address registered",
     });
   }
-  if (actual) {
-    if (actual.favoritos.length !== 0) {
-      const find = actual.favoritos.find((a: IUaddress) => {
-        return a.Address === newAddress.Address;
-      });
-      if (find) {
-        return res.json({ message: "Address is already added" });
-      }
-    }
-  }
   const isUpdated = await Address.updateOne(
     { userId: userBase.id },
     { $push: { address: newAddress } },
@@ -53,18 +43,22 @@ export async function deleteAddress(req: Request, res: Response) {
     Country: req.body.Country,
     Telephone_number: req.body.Telephone_number,
   };
+  const { index } = req.params;
+  const indexNumber = index ? <any>index * 1 : -1;
+  console.log(userBase.id, "userBase.id");
   const actual: Iaddress | null = await Address.findOne({
     userId: userBase.id,
   });
-  if (actual) {
-    const edit = actual.address.filter((a) => {
-      return a.Address !== newAddress.Address;
-    });
-    const isUpdated = await Address.updateOne(
-      { userId: userBase.id },
-      { favoritos: edit }
-    );
-    res.json({ isUpdated, message: "Address has been removed" });
+  if (typeof indexNumber === "number" && actual) {
+    console.log(indexNumber, "indexNumber");
+    const edit = actual.address.splice(indexNumber, 1);
+    console.log(edit, "edit", actual, "vsAddres");
+    // const isUpdated = await Address.updateOne(
+    //   { userId: userBase.id },
+    //   { address: edit }
+    // );
+    // return res.json({ isUpdated, message: "Address has been removed" });
+    return;
   }
 }
 
