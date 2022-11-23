@@ -1,9 +1,8 @@
 import axios from "axios";
 import { Request, Response } from "express";
+import { Identification } from "mercadopago/shared/payer-identification";
 import { type } from "os";
 
-import { Product } from "../models/product";
-import { IUser } from "../models/user";
 import { mercadopago } from "../services/mercadopago";
 
 export type productType = {
@@ -31,24 +30,29 @@ export async function pay(req: Request, res: Response) {
     return {
       picture_url: p.images,
       title: p.name,
-      unit_price: Math.ceil(p.price.value),
+      unit_price: Math.ceil(p.price.value * 5000),
       quantity: p.quantity,
     };
   });
   if (user !== undefined) {
     const IVA = "IVA";
     const APPROVED = "approved";
+    const RUT = "RUT";
     console.log(user, "usuario¿?");
     const preference = {
       items: itemsToSend,
-      payer: { name: user.name, email: user.email },
-      paymentMethods: [{ payment_type_id: "ticket" }],
-      back_urls: {
-        success: "http://localhost:5173/feedback",
-        failure: "http://localhost:5173/feedback",
-        pending: "http://localhost:5173/feedback",
+      payer: {
+        name: user.name,
+        email: user.email,
+        identification: { type: "RUT" as typeof RUT, number: "12345678" },
       },
-      auto_return: "approved" as typeof APPROVED,
+      paymentMethods: { default_payment_method_id: "ticket" },
+      back_urls: {
+        success: "http://localhost:5173/api/pay/success",
+        failure: "http://localhost:5173/api/pay/failure",
+        pending: "http://localhost:5173/api/pay/pending",
+      },
+      // auto_return: "approved" as typeof APPROVED,
       taxes: [
         {
           type: "IVA" as typeof IVA,
@@ -70,135 +74,3 @@ export async function pay(req: Request, res: Response) {
       });
   }
 }
-
-const payment_methods = [
-  {
-    id: "codensa",
-    name: "Crédito Fácil Codensa",
-    payment_type_id: "credit_card",
-    status: "active",
-    secure_thumbnail:
-      "https://www.mercadopago.com/org-img/MP3/API/logos/codensa.gif",
-    thumbnail: "http://img.mlstatic.com/org-img/MP3/API/logos/codensa.gif",
-    deferred_capture: "unsupported",
-    min_allowed_amount: 100,
-    max_allowed_amount: 5000000,
-    accreditation_time: null,
-    financial_institutions: [],
-  },
-  {
-    id: "debvisa",
-    name: "Visa Débito",
-    payment_type_id: "debit_card",
-    status: "active",
-    secure_thumbnail:
-      "https://www.mercadopago.com/org-img/MP3/API/logos/debvisa.gif",
-    thumbnail: "https://www.mercadopago.com/org-img/MP3/API/logos/debvisa.gif",
-    deferred_capture: "unsupported",
-    min_allowed_amount: 1000,
-    max_allowed_amount: 50000000,
-    accreditation_time: 0,
-    financial_institutions: [],
-  },
-  {
-    id: "debmaster",
-    name: "Mastercard Débito",
-    payment_type_id: "debit_card",
-    status: "active",
-    secure_thumbnail:
-      "https://www.mercadopago.com/org-img/MP3/API/logos/debmaster.gif",
-    thumbnail:
-      "https://www.mercadopago.com/org-img/MP3/API/logos/debmaster.gif",
-    deferred_capture: "unsupported",
-    min_allowed_amount: 1000,
-    max_allowed_amount: 50000000,
-    accreditation_time: 0,
-    financial_institutions: [],
-  },
-  {
-    id: "visa",
-    name: "Visa",
-    payment_type_id: "credit_card",
-    status: "active",
-    secure_thumbnail:
-      "https://www.mercadopago.com/org-img/MP3/API/logos/visa.gif",
-    thumbnail: "https://www.mercadopago.com/org-img/MP3/API/logos/visa.gif",
-    deferred_capture: "supported",
-    min_allowed_amount: 1000,
-    max_allowed_amount: 50000000,
-    accreditation_time: 2880,
-    financial_institutions: [],
-  },
-  {
-    id: "amex",
-    name: "American Express",
-    payment_type_id: "credit_card",
-    status: "active",
-    secure_thumbnail:
-      "https://www.mercadopago.com/org-img/MP3/API/logos/amex.gif",
-    thumbnail: "http://img.mlstatic.com/org-img/MP3/API/logos/amex.gif",
-    deferred_capture: "unsupported",
-    min_allowed_amount: 1000,
-    max_allowed_amount: 50000000,
-    accreditation_time: 2880,
-    financial_institutions: [],
-  },
-  {
-    id: "master",
-    name: "Mastercard",
-    payment_type_id: "credit_card",
-    status: "active",
-    secure_thumbnail:
-      "https://www.mercadopago.com/org-img/MP3/API/logos/master.gif",
-    thumbnail: "http://img.mlstatic.com/org-img/MP3/API/logos/master.gif",
-    deferred_capture: "unsupported",
-    min_allowed_amount: 1000,
-    max_allowed_amount: 50000000,
-    accreditation_time: 2880,
-    financial_institutions: [],
-  },
-  {
-    id: "diners",
-    name: "Diners",
-    payment_type_id: "credit_card",
-    status: "active",
-    secure_thumbnail:
-      "https://www.mercadopago.com/org-img/MP3/API/logos/diners.gif",
-    thumbnail: "http://img.mlstatic.com/org-img/MP3/API/logos/diners.gif",
-    deferred_capture: "unsupported",
-    min_allowed_amount: 1000,
-    max_allowed_amount: 50000000,
-    accreditation_time: 2880,
-    financial_institutions: [],
-  },
-  {
-    id: "efecty",
-    name: "Efecty",
-    payment_type_id: "ticket",
-    status: "active",
-    secure_thumbnail:
-      "https://www.mercadopago.com/org-img/MP3/API/logos/efecty.gif",
-    thumbnail: "http://img.mlstatic.com/org-img/MP3/API/logos/efecty.gif",
-    deferred_capture: "does_not_apply",
-    settings: [],
-    additional_info_needed: [],
-    min_allowed_amount: 5000,
-    max_allowed_amount: 8000000,
-    accreditation_time: 0,
-    financial_institutions: [],
-  },
-  {
-    id: "pse",
-    name: "PSE",
-    payment_type_id: "bank_transfer",
-    status: "active",
-    secure_thumbnail:
-      "https://www.mercadopago.com/org-img/MP3/API/logos/pse.gif",
-    thumbnail: "https://www.mercadopago.com/org-img/MP3/API/logos/pse.gif",
-    deferred_capture: "does_not_apply",
-    settings: [],
-    min_allowed_amount: 1600,
-    max_allowed_amount: 340000000,
-    accreditation_time: 30,
-  },
-];
