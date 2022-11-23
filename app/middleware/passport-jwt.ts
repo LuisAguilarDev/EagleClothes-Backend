@@ -33,7 +33,6 @@ const auth: RequestHandler = (req, res, next) => {
             text: "confirm email",
             html: `<a href="http://localhost:5173/validateUser/tokenToValidate/${token}">Please confirm your email</a>`,
           });
-          console.log(answer, "hola?");
         }
         return false;
       }

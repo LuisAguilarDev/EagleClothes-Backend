@@ -6,12 +6,10 @@ export async function getProducts(req: Request, res: Response) {
   const { name } = req.params;
   const { category } = req.query;
   if (typeof category === "string") {
-    console.log(decodeURI(category));
     if (category) {
       const search = await Product.find({
         category: decodeURI(category),
       });
-      console.log(search);
       return res.json({ search, message: "product list" });
     }
   }

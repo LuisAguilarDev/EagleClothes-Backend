@@ -12,16 +12,3 @@ export const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS_APLICATION, // generated ethereal password
   },
 });
-
-// send mail with defined transport object
-// transporter.verify(() => {
-//   console.log("ready email");
-// });
-
-// transporter.sendMail({
-//   from: `"Eagle Clothes" <eagle.clothes.store@gmail.com>`,
-//   to: "luisgerardo900@gmail.com",
-//   subject: "Hello",
-//   text: "confrim email",
-//   html: "<h1>Hello World</h1>",
-// });

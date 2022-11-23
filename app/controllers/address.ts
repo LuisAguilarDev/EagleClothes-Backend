@@ -5,7 +5,6 @@ import { IUser } from "../models/user";
 
 export async function postAddress(req: Request, res: Response) {
   const userBase: IUser | any = req.user;
-  console.log(req.body);
   const newAddress: IUaddress = {
     ZIP_CODE: req.body.ZIP_CODE,
     Address: req.body.Address,
@@ -13,7 +12,6 @@ export async function postAddress(req: Request, res: Response) {
     Country: req.body.Country,
     Telephone_number: req.body.Telephone_number,
   };
-  console.log(newAddress);
   const actual: any = await Address.findOne({ userId: userBase.id });
   if (!actual) {
     const isUpdated = await Address.updateOne(
@@ -42,14 +40,12 @@ export async function deleteAddress(req: Request, res: Response) {
     userId: userBase.id,
   });
   if (typeof indexNumber === "number" && actual) {
-    console.log(indexNumber, "indexNumber");
     actual.address.splice(indexNumber, 1);
-    const isUpdated = await Address.updateOne(
+    await Address.updateOne(
       { userId: userBase.id },
       { address: actual.address },
       { upsert: true }
     );
-    console.log(isUpdated, "isupdated");
     return res.json({ actual, message: "Address has been removed" });
   }
 }

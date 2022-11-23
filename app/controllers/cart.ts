@@ -46,11 +46,9 @@ export async function postCart(req: Request, res: Response) {
           { cart: [...cart] },
           { upsert: true }
         );
-        console.log(isUpdated);
         return res.json({ isUpdated, message: "Product quantity updated" });
       }
     }
-    console.log("llegue hasta aqui?");
     const isUpdated = await Cart.updateOne(
       { userId: created._id },
       { $push: { cart: product } },

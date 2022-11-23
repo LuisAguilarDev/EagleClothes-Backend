@@ -45,32 +45,38 @@ export async function createUser(req: Request, res: Response) {
 
 export async function signIn(req: Request, res: Response) {
   const { email, password } = req.body;
-  const userBase = {
-    email,
-    password,
+
+  const user: any = await User.findOne({ email: email });
+  const userValidate = {
+    email: user.email,
+    password: password,
+    name: user.name,
+    verified: user.verified,
   };
-  const user = await User.findOne({ email: email });
-  console.log(!user?.verified);
+  const userBase: IUser = {
+    email: user.email,
+    passwordHash: user.passwordHashed,
+    name: user.name,
+    verified: user.verified,
+  };
   if (!user?.verified) {
     async function isTest(userInfo: any) {
-      if (userInfo as IUser) {
-        const token = await createToken(userInfo);
-        transporter.sendMail({
-          from: `"Eagle Clothes" <eagle.clothes.store@gmail.com>`,
-          to: `${userInfo.email}`,
-          subject: "Please verify your email",
-          text: "confirm email",
-          html: `<a href="http://localhost:5173/validateUser?token=${token}">Please confirm your email</a>`,
-        });
-      }
+      const token = await createToken(userInfo);
+      transporter.sendMail({
+        from: `"Eagle Clothes" <eagle.clothes.store@gmail.com>`,
+        to: `${userInfo.email}`,
+        subject: "Please verify your email",
+        text: "confirm email",
+        html: `<a href="http://localhost:5173/validateUser?token=${token}">Please confirm your email</a>`,
+      });
     }
     isTest(userBase);
     return res.status(403).json({ message: "Please validate your email" });
   }
   if (user) {
-    const isMatch = await validatePassword(userBase);
+    const isMatch = await validatePassword(userValidate);
     if (isMatch) {
-      const token = await createToken(user);
+      const token = await createToken(userBase);
       return res.json({ token, user, message: "Successful login" });
     }
   }
@@ -89,7 +95,6 @@ export async function validateUser(req: Request, res: Response) {
   const decodedToken = jwt.decode(token);
   const secret: string =
     process.env.SECRET !== undefined ? process.env.SECRET : "";
-  console.log(decodedToken, token);
   try {
     jwt.verify(token, secret);
   } catch (error) {

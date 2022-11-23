@@ -14,6 +14,7 @@ export async function createToken(user: IUser) {
     {
       id: data[0]._id,
       email: data[0].email,
+      name: data[0].name,
       password: data[0].passwordHash,
       verified: data[0].verified,
     },
