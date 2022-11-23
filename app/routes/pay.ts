@@ -7,8 +7,10 @@ const payRouter = Router();
 
 payRouter.post("/", auth, payController.pay);
 
-// payRouter.post("/create_preference", payController.pay);
+payRouter.post("/success", payController.pay);
 
-// payRouter.get("/feedback", payController.pay);
+payRouter.get("/failure", payController.pay);
+
+payRouter.get("/pending", payController.pay);
 
 export default payRouter;
