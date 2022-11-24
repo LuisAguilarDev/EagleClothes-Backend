@@ -34,6 +34,11 @@ export async function pay(req: Request, res: Response) {
       quantity: p.quantity,
     };
   });
+  itemsToSend.push({
+    title: "shipping",
+    unit_price: Math.ceil(5 * 5000),
+    quantity: 1,
+  });
   if (user !== undefined) {
     const IVA = "IVA";
     const APPROVED = "approved";
@@ -73,4 +78,21 @@ export async function pay(req: Request, res: Response) {
         console.log(error);
       });
   }
+}
+
+export async function confirm(req: Request, res: Response) {
+  const { id } = req.params;
+  const Authorization = process.env.PROD_ACCESS_TOKEN
+    ? "Bearer " + process.env.PROD_ACCESS_TOKEN
+    : "";
+  axios
+    .get(`https://api.mercadopago.com/v1/payments/${id}`, {
+      headers: { Authorization },
+    })
+    .then((res) => {
+      console.log(
+        res.data.status,
+        res.data.transaction_details.total_paid_amount
+      );
+    });
 }

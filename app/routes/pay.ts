@@ -7,7 +7,7 @@ const payRouter = Router();
 
 payRouter.post("/", auth, payController.pay);
 
-payRouter.post("/success", payController.pay);
+payRouter.get("/success/:id", payController.confirm);
 
 payRouter.get("/failure", payController.pay);
 
