@@ -1,4 +1,8 @@
-import { Orders } from "../models/orders";
+import { Request, Response } from "express";
+
+import { Address, Iaddress, IUaddress } from "../models/address";
+import { IOrder, IOrders, Orders } from "../models/orders";
+import { IUser } from "../models/user";
 
 export async function createOrder(
   userBase: any,
@@ -36,4 +40,13 @@ export async function createOrder(
     { upsert: true }
   );
   return { isUpdated, newOrder, message: "Order added" };
+}
+
+export async function getOrders(req: Request, res: Response) {
+  const userBase: IUser | any = req.user;
+  const OrdersList: any = await Orders.find({ userId: userBase.id });
+  OrdersList.order.filter((o: any) => {
+    return o.confirmed;
+  });
+  res.send({ OrdersList });
 }

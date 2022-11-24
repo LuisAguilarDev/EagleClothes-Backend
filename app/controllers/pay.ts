@@ -54,9 +54,9 @@ export async function pay(req: Request, res: Response) {
       },
       paymentMethods: { default_payment_method_id: "ticket" },
       back_urls: {
-        success: "http://localhost:5173/api/pay/success",
-        failure: "http://localhost:5173/api/pay/failure",
-        pending: "http://localhost:5173/api/pay/pending",
+        success: "http://localhost:5173/orderConfirm",
+        failure: "http://localhost:5173/orderConfirm",
+        pending: "http://localhost:5173/orderConfirm",
       },
       // auto_return: "approved" as typeof APPROVED,
       taxes: [

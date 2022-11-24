@@ -22,6 +22,24 @@ const ordersSchema = new Schema({
   ],
 });
 
+type IOrder = {
+  orderId: string;
+  date: string;
+  estimated_delivery: any;
+  total: number;
+  recipient: string;
+  address: any[];
+  payment_method: string;
+  payment_id: number;
+  items: [];
+  confirmed: boolean;
+};
+
+type IOrders = {
+  userId: string;
+  order: IOrder[];
+};
+
 const Orders = model("Orders", ordersSchema);
 
-export { Orders };
+export { IOrder, IOrders, Orders };
