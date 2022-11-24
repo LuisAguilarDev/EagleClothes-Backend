@@ -1,9 +1,9 @@
 import axios from "axios";
 import { Request, Response } from "express";
-import { Identification } from "mercadopago/shared/payer-identification";
-import { type } from "os";
 
+import { Address, Iaddress, IUaddress } from "../models/address";
 import { mercadopago } from "../services/mercadopago";
+import { createOrder } from "./order";
 
 export type productType = {
   quantity?: number;
@@ -39,6 +39,7 @@ export async function pay(req: Request, res: Response) {
     unit_price: Math.ceil(5 * 5000),
     quantity: 1,
   });
+
   if (user !== undefined) {
     const IVA = "IVA";
     const APPROVED = "approved";
@@ -81,18 +82,57 @@ export async function pay(req: Request, res: Response) {
 }
 
 export async function confirm(req: Request, res: Response) {
-  const { id } = req.params;
+  const user: any = req.user;
+  const { id }: any = req.params;
+  const cart = req.body;
   const Authorization = process.env.PROD_ACCESS_TOKEN
     ? "Bearer " + process.env.PROD_ACCESS_TOKEN
     : "";
+
+  function shoppingCartTotal() {
+    if (cart.length === 0) {
+      return;
+    }
+    const answer = cart.map((p: productType) => {
+      const quantity: number = p.quantity ? p.quantity : 0;
+      const price: number = p.price.value ? p.price.value : 0;
+      const total = quantity * price;
+      return total * 5000;
+    });
+    answer.push(25000);
+    let total = answer.reduce((a: any, b: any) => a + b, 0);
+    total = total ? total : 0;
+    const data = Math.round(total * 100) / 100;
+    return data;
+  }
+  const total = shoppingCartTotal();
+  console.log(total);
+  const idNumber: number = id ? id * 1 : 0;
+  const address: Iaddress | null = await Address.findOne({
+    userId: user.id,
+  });
   axios
     .get(`https://api.mercadopago.com/v1/payments/${id}`, {
       headers: { Authorization },
     })
-    .then((res) => {
-      console.log(
-        res.data.status,
-        res.data.transaction_details.total_paid_amount
-      );
+    .then((response) => {
+      if (total !== response.data.transaction_details.total_paid_amount) {
+        return res.send({
+          message: `Contact us via +576011234567, with this payment id=${id} to confirm your order`,
+          icon: "error",
+        });
+      }
+      if (
+        total === response.data.transaction_details.total_paid_amount &&
+        response.data.status === "approved"
+      ) {
+        if (total !== undefined && address !== null) {
+          createOrder(user, cart, true, total, idNumber, address.address);
+        }
+        return res.send({
+          message: `Order Confirmed`,
+          icon: "confirm",
+        });
+      }
     });
 }

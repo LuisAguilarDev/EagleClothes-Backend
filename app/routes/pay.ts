@@ -7,10 +7,10 @@ const payRouter = Router();
 
 payRouter.post("/", auth, payController.pay);
 
-payRouter.get("/success/:id", payController.confirm);
+payRouter.post("/success/:id", auth, payController.confirm);
 
-payRouter.get("/failure", payController.pay);
+// payRouter.get("/failure", payController.pay);
 
-payRouter.get("/pending", payController.pay);
+// payRouter.get("/pending", payController.pay);
 
 export default payRouter;
