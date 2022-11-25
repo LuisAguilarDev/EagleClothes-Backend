@@ -7,6 +7,7 @@ const cartRouter = Router();
 
 cartRouter.post("/", auth, cartController.postCart);
 cartRouter.delete("/:code", auth, cartController.deleteCart);
+cartRouter.delete("/all", auth, cartController.deleteAllCart);
 cartRouter.get("/", auth, cartController.getCart);
 cartRouter.get("/updateQuantity", auth, cartController.updateQuantity);
 

@@ -1,7 +1,8 @@
 import axios from "axios";
 import { Request, Response } from "express";
 
-import { Address, Iaddress, IUaddress } from "../models/address";
+import { Address, Iaddress } from "../models/address";
+import { Payment } from "../models/payments";
 import { mercadopago } from "../services/mercadopago";
 import { createOrder } from "./order";
 
@@ -24,7 +25,6 @@ export type productType = {
 
 export async function pay(req: Request, res: Response) {
   const user: any = req.user;
-  console.log(user, "USER?");
   const items = req.body;
   const itemsToSend = items.map((p: productType) => {
     return {
@@ -44,7 +44,6 @@ export async function pay(req: Request, res: Response) {
     const IVA = "IVA";
     const APPROVED = "approved";
     const RUT = "RUT";
-    console.log(user, "usuario¿?");
     const preference = {
       items: itemsToSend,
       payer: {
@@ -70,7 +69,6 @@ export async function pay(req: Request, res: Response) {
     mercadopago.preferences
       .create(preference)
       .then((response: any) => {
-        console.log(response);
         return res.send({
           global: response.body.id,
         });
@@ -89,6 +87,16 @@ export async function confirm(req: Request, res: Response) {
     ? "Bearer " + process.env.PROD_ACCESS_TOKEN
     : "";
 
+  const isUpdated: any = await Payment.updateOne(
+    { paymentId: id },
+    { valid: true },
+    { upsert: true }
+  );
+  const payment: any = await Payment.find({ paymentId: id });
+  console.log(payment, isUpdated);
+  if (!payment[0].valid) {
+    return res.status(404).send({ message: "Invalid Request" });
+  }
   function shoppingCartTotal() {
     if (cart.length === 0) {
       return;
@@ -106,16 +114,16 @@ export async function confirm(req: Request, res: Response) {
     return data;
   }
   const total = shoppingCartTotal();
-  console.log(total);
   const idNumber: number = id ? id * 1 : 0;
   const address: Iaddress | null = await Address.findOne({
     userId: user.id,
   });
+
   axios
     .get(`https://api.mercadopago.com/v1/payments/${id}`, {
       headers: { Authorization },
     })
-    .then((response) => {
+    .then(async (response) => {
       if (total !== response.data.transaction_details.total_paid_amount) {
         return res.send({
           message: `Contact us via +576011234567, with this payment id=${id} to confirm your order`,
@@ -128,11 +136,17 @@ export async function confirm(req: Request, res: Response) {
       ) {
         if (total !== undefined && address !== null) {
           createOrder(user, cart, true, total, idNumber, address.address);
+          const isUpdated: any = await Payment.updateOne(
+            { paymentId: id },
+            { valid: false },
+            { upsert: true }
+          );
+
+          return res.send({
+            message: `Order Confirmed`,
+            icon: "confirm",
+          });
         }
-        return res.send({
-          message: `Order Confirmed`,
-          icon: "confirm",
-        });
       }
     });
 }

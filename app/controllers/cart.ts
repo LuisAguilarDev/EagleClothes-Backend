@@ -75,6 +75,14 @@ export async function deleteCart(req: any, res: Response) {
   });
 }
 
+export async function deleteAllCart(req: any, res: Response) {
+  const userBase: any = req.user;
+  await Cart.updateOne({ userId: userBase.id }, { cart: [] }, { upsert: true });
+  res.json({
+    message: "Done",
+  });
+}
+
 export async function getCart(req: Request, res: Response) {
   const userBase: any = req.user;
   const created: any = await Cart.findOne({ userId: userBase.id });

@@ -45,8 +45,8 @@ export async function createOrder(
 export async function getOrders(req: Request, res: Response) {
   const userBase: IUser | any = req.user;
   const OrdersList: any = await Orders.find({ userId: userBase.id });
-  OrdersList.order.filter((o: any) => {
+  OrdersList[0].order.filter((o: any) => {
     return o.confirmed;
   });
-  res.send({ OrdersList });
+  res.send(OrdersList[0].order);
 }
