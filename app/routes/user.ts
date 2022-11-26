@@ -13,4 +13,8 @@ usersRouter.delete("/singIn", auth, userController.deleteUser);
 
 usersRouter.get("/validateUser/:token", userController.validateUser);
 
+usersRouter.get("/forgotPassword/:email", userController.forgotPassword);
+
+usersRouter.post("/change/:password", auth, userController.changePassword);
+
 export { usersRouter };

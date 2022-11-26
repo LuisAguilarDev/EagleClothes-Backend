@@ -118,3 +118,38 @@ export async function validateUser(req: Request, res: Response) {
   }
   isTest(decodedToken);
 }
+
+export async function forgotPassword(req: Request, res: Response) {
+  const { email } = req.params;
+
+  const user: any = await User.findOne({ email: email });
+
+  async function isTest(userInfo: any) {
+    const token = await createToken(userInfo);
+    transporter.sendMail({
+      from: `"Eagle Clothes" <eagle.clothes.store@gmail.com>`,
+      to: `${userInfo.email}`,
+      subject: "Renew password",
+      text: "Renew password",
+      html: `<a href="http://localhost:5173/resetPassword?token=${token}">Renew your password</a>`,
+    });
+  }
+  isTest(user);
+  return res.send({ ok: "ok" });
+}
+
+export async function changePassword(req: Request, res: Response) {
+  const { password } = req.params;
+  const userBase: any = req.user ? req.user : null;
+  const salt = bcrypt.genSaltSync(10);
+  const passwordHashed = bcrypt.hashSync(password, salt);
+  if (!userBase) {
+    return;
+  }
+  const isUpdated = await User.updateOne(
+    { email: userBase.email },
+    { passwordHash: passwordHashed },
+    { upsert: true }
+  );
+  return res.send({ isUpdated, userBase, message: "Password updated" });
+}
