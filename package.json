@@ -9,7 +9,8 @@
     "build": "tsc",
     "lint": "eslint --ignore-path .gitignore . --ext .ts",
     "lint:fix": "npm run lint -- --fix",
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "start:prod": "node build/server.js"
   },
   "author": "",
   "license": "ISC",
