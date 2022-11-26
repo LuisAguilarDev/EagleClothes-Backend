@@ -12,7 +12,7 @@ export async function createOrder(
   payment_id: number,
   address: any[]
 ) {
-  const newOrder = {
+  const newOrder: IOrder = {
     total: cartTotal,
     recipient: userBase.name,
     address: address[0],
@@ -21,10 +21,10 @@ export async function createOrder(
     items: cart,
     confirmed,
   };
-  const actual: any = await Orders.findOne({ userId: userBase._id });
+  const actual = await Orders.findOne({ userId: userBase._id });
   if (actual) {
     if (actual.order.length !== 0) {
-      const find = actual.order.find((x: any) => {
+      const find: any = actual.order.find((x: any) => {
         return x.payment_id === payment_id;
       });
       if (find) {

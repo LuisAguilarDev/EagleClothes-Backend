@@ -23,9 +23,9 @@ const ordersSchema = new Schema({
 });
 
 type IOrder = {
-  orderId: string;
-  date: string;
-  estimated_delivery: any;
+  orderId?: string;
+  date?: string;
+  estimated_delivery?: any;
   total: number;
   recipient: string;
   address: any[];
