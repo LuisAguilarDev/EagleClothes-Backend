@@ -31,7 +31,7 @@ const auth: RequestHandler = (req, res, next) => {
             to: `${userInfo.email}`,
             subject: "Please verify your email",
             text: "confirm email",
-            html: `<a href="http://localhost:5173/validateUser/tokenToValidate/${token}">Please confirm your email</a>`,
+            html: `<a href="https://eagleclothes-luisaguilardev.vercel.app/validateUser/tokenToValidate/${token}">Please confirm your email</a>`,
           });
         }
         return false;

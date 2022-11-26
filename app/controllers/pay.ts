@@ -53,9 +53,9 @@ export async function pay(req: Request, res: Response) {
       },
       paymentMethods: { default_payment_method_id: "ticket" },
       back_urls: {
-        success: "http://localhost:5173/orderConfirm",
-        failure: "http://localhost:5173/orderConfirm",
-        pending: "http://localhost:5173/orderConfirm",
+        success: "https://eagleclothes-luisaguilardev.vercel.app/orderConfirm",
+        failure: "https://eagleclothes-luisaguilardev.vercel.app/orderConfirm",
+        pending: "https://eagleclothes-luisaguilardev.vercel.app/orderConfirm",
       },
       // auto_return: "approved" as typeof APPROVED,
       taxes: [
