@@ -93,7 +93,6 @@ export async function confirm(req: Request, res: Response) {
     { upsert: true }
   );
   const payment: any = await Payment.find({ paymentId: id });
-  console.log(payment, isUpdated);
   if (!payment[0].valid) {
     return res.status(404).send({ message: "Invalid Request" });
   }
