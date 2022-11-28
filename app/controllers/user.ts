@@ -33,7 +33,7 @@ export async function createUser(req: Request, res: Response) {
       to: `${email}`,
       subject: "Please verify your email",
       text: "confirm email",
-      html: `<a href="https://eagleclothes.vercel.app/validateUser?token=${token}">Please confirm your email</a>`,
+      html: `<a href="https://eagleclothes.vercel.app/user/validate?token=${token}">Please confirm your email</a>`,
     });
     return res.json({
       user: answer,
@@ -67,7 +67,7 @@ export async function signIn(req: Request, res: Response) {
         to: `${userInfo.email}`,
         subject: "Please verify your email",
         text: "confirm email",
-        html: `<a href="https://eagleclothes.vercel.app/validateUser?token=${token}">Please confirm your email</a>`,
+        html: `<a href="https://eagleclothes.vercel.app/user/validate?token=${token}">Please confirm your email</a>`,
       });
     }
     isTest(userBase);
