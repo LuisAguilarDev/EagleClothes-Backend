@@ -33,7 +33,7 @@ export async function createUser(req: Request, res: Response) {
       to: `${email}`,
       subject: "Please verify your email",
       text: "confirm email",
-      html: `<a href="https://eagleclothes-luisaguilardev.vercel.app/validateUser?token=${token}">Please confirm your email</a>`,
+      html: `<a href="https://eagleclothes.vercel.app/validateUser?token=${token}">Please confirm your email</a>`,
     });
     return res.json({
       user: answer,
@@ -67,7 +67,7 @@ export async function signIn(req: Request, res: Response) {
         to: `${userInfo.email}`,
         subject: "Please verify your email",
         text: "confirm email",
-        html: `<a href="https://eagleclothes-luisaguilardev.vercel.app/validateUser?token=${token}">Please confirm your email</a>`,
+        html: `<a href="https://eagleclothes.vercel.app/validateUser?token=${token}">Please confirm your email</a>`,
       });
     }
     isTest(userBase);
@@ -131,7 +131,7 @@ export async function forgotPassword(req: Request, res: Response) {
       to: `${userInfo.email}`,
       subject: "Renew password",
       text: "Renew password",
-      html: `<a href="https://eagleclothes-luisaguilardev.vercel.app/resetPassword?token=${token}">Renew your password</a>`,
+      html: `<a href="https://eagleclothes.vercel.app/resetPassword?token=${token}">Renew your password</a>`,
     });
   }
   isTest(user);

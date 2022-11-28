@@ -53,9 +53,9 @@ export async function pay(req: Request, res: Response) {
       },
       paymentMethods: { default_payment_method_id: "ticket" },
       back_urls: {
-        success: "https://eagleclothes-luisaguilardev.vercel.app/orderConfirm",
-        failure: "https://eagleclothes-luisaguilardev.vercel.app/orderConfirm",
-        pending: "https://eagleclothes-luisaguilardev.vercel.app/orderConfirm",
+        success: "https://eagleclothes.vercel.app/orderConfirm",
+        failure: "https://eagleclothes.vercel.app/orderConfirm",
+        pending: "https://eagleclothes.vercel.app/orderConfirm",
       },
       // auto_return: "approved" as typeof APPROVED,
       taxes: [
