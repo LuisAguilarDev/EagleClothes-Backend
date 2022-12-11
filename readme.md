@@ -1,48 +1,52 @@
-# TypeScript Express API Bootstrap (base / project starter)
+# Clothes Shopping Web App
 
-This is a repository intended to serve as a starting point if you want to bootstrap a express API project in TypeScript.
+This project is a web application for buying clothes that allows users to search and filter garments, as well as access their user panel through a login created using MongoDB and Bcrypt.
 
-## Features
+## Development Methodology
 
-- [TypeScript](https://www.typescriptlang.org/) (v4)
-- [ts-node-dev](https://github.com/wclr/ts-node-dev)
-- [Prettier](https://prettier.io/)
-- [ESLint](https://eslint.org/) with:
-  - [Simple Import Sort](https://github.com/lydell/eslint-plugin-simple-import-sort/)
-  - [Import plugin](https://github.com/benmosher/eslint-plugin-import/)
-- [Jest](https://jestjs.io) with [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro)
-- [GitHub Action workflows](https://github.com/features/actions) set up to run tests and linting on push
+This project was developed using the SCRUM agile methodology.
 
-## Running the app
+## Technologies
 
-```
-# install dependencies
-npm install
+This project uses the following technologies:
 
-# run in dev mode on port 3000
-npm run dev
+- React for the frontend
+- useReducer for global state handling
+- Material UI for styling
+- SASS for additional styling
+- MongoDB for data storage
+- Express for the backend
+- Typescript for type checking
+- Mongoose for filtering data
 
-# generate production build
-npm run build
+## Setup
 
-# run generated content in dist folder on port 3000
-npm run start
-```
+To set up and install this project, follow these steps:
 
-## Testing
+1. Install the necessary dependencies by running `npm install`
+2. Create a `.env` file with the appropriate configuration settings
+3. Run the project using `npm start`
 
-### Jest with supertest
+## Usage
 
-```
-npm run test
-```
+To use this project:
 
-## Linting
+1. Navigate to the login page and log in using your username and password
+2. Use the search and filter functionality to find the clothes you are looking for
+3. Add items to your cart and proceed to checkout to complete your purchase
 
-```
-# run linter
-npm run lint
+## Known Issues
 
-# fix lint issues
-npm run lint:fix
-```
+There are no known issues with this project at the moment.
+
+## Future Improvements
+
+Planned future improvements for this project include:
+
+- Adding more clothing items
+- Improving the search and filter functionality
+- Implementing additional features in the user panel
+
+## Contact
+
+If you have any questions or need support, please contact me at [luisgerardo900@gmail.com](mailto:luisgerardo900@gmail.com).
