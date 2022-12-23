@@ -8,6 +8,8 @@ dotenv.config({ path: "./.env" });
 const secret: string =
   process.env.SECRET !== undefined ? process.env.SECRET : "";
 
+const AWS = "AWSPROVIDER";
+
 export async function createToken(user: IUser) {
   const data: any = await User.find({ email: user.email });
   const token = jwt.sign(
