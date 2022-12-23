@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./dist/server.js",
     "dev": "ts-node ./app/server.ts",
-    "build": "rimraf ./dist && tsc",
+    "build": "npx tsc",
     "lint": "eslint --ignore-path .gitignore . --ext .ts",
     "lint:fix": "npm run lint -- --fix",
     "start:prod": "node build/server.js"
