@@ -1,0 +1,92 @@
+version: 0.2
+
+env:
+  variables:
+    JAVA_HOME: "/usr/lib/jvm/java-8-openjdk-amd64"
+    MONGO_URI: "mongodb+srv://luisgerardo900:SyFd5N3TNedDl7Sw@cluster0.smqnuhx.mongodb.net/test"
+EMAIL_USER: "eagle.clothes.store@gmail.com"
+EMAIL_PASS=eagle.clothes.store@123456
+EMAIL_PASS_APLICATION=fxzkytcpxhhllvbf
+EMAIL_FROM=GMAIL
+SECRET=donomarydaddyYankeesonlosmejoresexponentesdelgenerourbano123456
+PUBLICK_KEY= "TEST-495594a8-240a-4c4f-a469-1216b94bd885"
+PROD_ACCESS_TOKEN= "TEST-2769418817302265-112200-582ca984a7d52bf9b0f3a567d32f7c51-1245102062"
+  parameter-store:
+    LOGIN_PASSWORD: /CodeBuild/dockerLoginPassword
+
+phases:
+  install:
+    commands:
+      - echo Entered the install phase...
+      - apt-get update -y
+      - apt-get install -y maven
+    finally:
+      - echo This always runs even if the update or install command fails 
+  pre_build:
+    commands:
+      - echo Entered the pre_build phase...
+      - docker login -u User -p $LOGIN_PASSWORD
+    finally:
+      - echo This always runs even if the login command fails 
+  build:
+    commands:
+      - echo Entered the build phase...
+      - echo Build started on `date`
+      - mvn install
+    finally:
+      - echo This always runs even if the install command fails
+  post_build:
+    commands:
+      - echo Entered the post_build phase...
+      - echo Build completed on `date`
+
+reports:
+  arn:aws:codebuild:your-region:your-aws-account-id:report-group/report-group-name-1:
+    files:
+      - "**/*"
+    base-directory: 'target/tests/reports'
+    discard-paths: no
+  reportGroupCucumberJson:
+    files:
+      - 'cucumber/target/cucumber-tests.xml'
+    discard-paths: yes
+    file-format: CUCUMBERJSON # default is JUNITXML
+artifacts:
+  files:
+    - target/messageUtil-1.0.jar
+  discard-paths: yes
+  secondary-artifacts:
+    artifact1:
+      files:
+        - target/artifact-1.0.jar
+      discard-paths: yes
+    artifact2:
+      files:
+        - target/artifact-2.0.jar
+      discard-paths: yes
+cache:
+  paths:
+    - '/root/.m2/**/*'
+
+
+
+
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: latest
+    commands:
+      - npm install -g typescript
+      - npm install
+  build:
+    commands:
+      - tsc
+
+artifacts:
+  files:
+    - package.json
+    - package-lock.json
+    - 'build/**/*'
+  discard-paths: yes
