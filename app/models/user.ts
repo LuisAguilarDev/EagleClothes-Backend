@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { model, Schema } from 'mongoose';
 
 const userSchema = new Schema<IUser>({
   email: { type: String, required: true, unique: true, lowercase: true },
@@ -9,14 +9,15 @@ const userSchema = new Schema<IUser>({
 });
 
 interface IUser {
+  id?: string;
   email: string;
   name?: string;
   passwordHash: string;
   verified: boolean;
 }
 
-userSchema.set("toJSON", {});
+userSchema.set('toJSON', {});
 
-const User = model<IUser>("User", userSchema);
+const User = model<IUser>('User', userSchema);
 
 export { IUser, User };

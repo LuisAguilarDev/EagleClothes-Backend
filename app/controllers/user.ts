@@ -1,14 +1,14 @@
-import * as bcrypt from "bcryptjs";
-import dotenv from "dotenv";
-import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import * as bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
+import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 
-import { createToken } from "../services/createToken";
-import { transporter } from "../services/validateEmail";
-import { validatePassword } from "../services/validatePassword";
-import { IUser, User } from "./../models/user";
+import { createToken } from '../services/createToken';
+import { transporter } from '../services/validateEmail';
+import { validatePassword } from '../services/validatePassword';
+import { IUser, User } from './../models/user';
 
-dotenv.config({ path: "./../../.env" });
+dotenv.config({ path: './../../.env' });
 
 export async function createUser(req: Request, res: Response) {
   const { email, name, password } = req.body;
@@ -16,7 +16,7 @@ export async function createUser(req: Request, res: Response) {
   const created = await User.findOne({ email: email });
   if (created) {
     return res.json({
-      message: "el usuario ya se encuentra creado en el sistema",
+      message: 'el usuario ya se encuentra creado en el sistema',
     });
   }
   if (created === null) {
@@ -31,14 +31,14 @@ export async function createUser(req: Request, res: Response) {
     transporter.sendMail({
       from: `"Eagle Clothes" <eagle.clothes.store@gmail.com>`,
       to: `${email}`,
-      subject: "Please verify your email",
-      text: "confirm email",
+      subject: 'Please verify your email',
+      text: 'confirm email',
       html: `<a href="https://eagleclothes.vercel.app/user/validate?token=${token}">Please confirm your email</a>`,
     });
     return res.json({
       user: answer,
       token,
-      message: "User created successfully please verify your email",
+      message: 'User created successfully please verify your email',
     });
   }
 }
@@ -65,41 +65,40 @@ export async function signIn(req: Request, res: Response) {
       transporter.sendMail({
         from: `"Eagle Clothes" <eagle.clothes.store@gmail.com>`,
         to: `${userInfo.email}`,
-        subject: "Please verify your email",
-        text: "confirm email",
+        subject: 'Please verify your email',
+        text: 'confirm email',
         html: `<a href="https://eagleclothes.vercel.app/user/validate?token=${token}">Please confirm your email</a>`,
       });
     }
     isTest(userBase);
-    return res.status(403).json({ message: "Please validate your email" });
+    return res.status(403).json({ message: 'Please validate your email' });
   }
   if (user) {
     const isMatch = await validatePassword(userValidate);
     if (isMatch) {
       const token = await createToken(userBase);
-      return res.json({ token, user, message: "Successful login" });
+      return res.json({ token, user, message: 'Successful login' });
     }
   }
-  return res.json({ message: "permision denied" });
+  return res.json({ message: 'permision denied' });
 }
 
 export async function deleteUser(req: Request, res: Response) {
   const userBase: any = req.user;
   type userBase = IUser;
   const answer = await User.deleteOne({ email: userBase.email });
-  res.json({ answer, message: "User deleted successfully" });
+  res.json({ answer, message: 'User deleted successfully' });
 }
 
 export async function validateUser(req: Request, res: Response) {
   const { token } = req.params;
   const decodedToken = jwt.decode(token);
-  const secret: string =
-    process.env.SECRET !== undefined ? process.env.SECRET : "";
+  const secret: string = process.env.SECRET ?? '';
   try {
     jwt.verify(token, secret);
   } catch (error) {
     console.log(error);
-    return res.status(401).send({ message: "Invalid Token" });
+    return res.status(401).send({ message: 'Invalid Token' });
   }
   async function isTest(userInfo: any) {
     if (userInfo as IUser) {
@@ -108,13 +107,13 @@ export async function validateUser(req: Request, res: Response) {
         await User.updateOne(
           { email: userInfo.email },
           { verified: true },
-          { upsert: true }
+          { upsert: true },
         );
         const token = await createToken(answer);
-        return res.json({ token, answer, message: "Successful login" });
+        return res.json({ token, answer, message: 'Successful login' });
       }
     }
-    return res.status(404).send({ message: "Invalid Request" });
+    return res.status(404).send({ message: 'Invalid Request' });
   }
   isTest(decodedToken);
 }
@@ -124,18 +123,15 @@ export async function forgotPassword(req: Request, res: Response) {
 
   const user: any = await User.findOne({ email: email });
 
-  async function isTest(userInfo: any) {
-    const token = await createToken(userInfo);
-    transporter.sendMail({
-      from: `"Eagle Clothes" <eagle.clothes.store@gmail.com>`,
-      to: `${userInfo.email}`,
-      subject: "Renew password",
-      text: "Renew password",
-      html: `<a href="https://eagleclothes.vercel.app/resetPassword?token=${token}">Renew your password</a>`,
-    });
-  }
-  isTest(user);
-  return res.send({ ok: "ok" });
+  const token = await createToken(user);
+  transporter.sendMail({
+    from: `"Eagle Clothes" <eagle.clothes.store@gmail.com>`,
+    to: `${user.email}`,
+    subject: 'Renew password',
+    text: 'Renew password',
+    html: `<a href="https://eagleclothes.vercel.app/resetPassword?token=${token}">Renew your password</a>`,
+  });
+  return res.send({ ok: 'ok' });
 }
 
 export async function changePassword(req: Request, res: Response) {
@@ -149,7 +145,7 @@ export async function changePassword(req: Request, res: Response) {
   const isUpdated = await User.updateOne(
     { email: userBase.email },
     { passwordHash: passwordHashed },
-    { upsert: true }
+    { upsert: true },
   );
-  return res.send({ isUpdated, userBase, message: "Password updated" });
+  return res.send({ isUpdated, userBase, message: 'Password updated' });
 }
